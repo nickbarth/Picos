@@ -1,6 +1,5 @@
 # Picos
-All the Pico games I've made. 
-
+All the Pico games I've ever made... and am probably still working on!
 
 <table>
   <tr>
