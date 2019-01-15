@@ -4,12 +4,12 @@ __lua__
 
 -- globals
 ugc = 0.08 -- gravity constant
-started = false
+started = true
 gameover = false
 actors = {}
 player = {}
 boss = {}
-bg = { x=0 }
+bg = { x=0, y=0 }
 score = 0
 cam = { x=0, y=0 }
 checkpoint = { x=0, y=0 }
@@ -75,7 +75,7 @@ function movement(self)
 
   -- drag friction
   if self.ddx == 0 then
-    self.dx *= 0.9
+    self.dx *= 0.7
   end
 
   -- falling
@@ -127,7 +127,6 @@ function movement(self)
   -- reset
   self.ddx = 0
 end
-
 
 -- player methods
 ----
@@ -256,7 +255,6 @@ end
 ----
 
 -- sprite
-sprite = {}
 make_sprite = function(x, y, frame)
   local self = {}
   self.id = #actors
@@ -649,6 +647,10 @@ function _draw()
     return
   end
 
+  local scroll = ((player.x / 550) * 50) % 64 * -1
+  spr(136, cam.x + bg.x + scroll, cam.y + bg.y, 8, 8, false, false)
+  spr(136, cam.x + bg.x + 64 + scroll, cam.y + bg.y, 8, 8, false, false)
+
   map(0, 0, 0, 0, 128, 64)
 
   for k, actor in pairs(actors) do
@@ -660,8 +662,8 @@ function _draw()
   print(score, cam.x + 10, cam.y+1, 7)
 
   if gameover then
-    print("gameover", cam.x + 18, cam.y+9, 7)
-    print("you  win", cam.x + 18, cam.y+18, 7)
+    print("gameover", cam.x + 18, cam.y+9, 0)
+    print("you  win", cam.x + 18, cam.y+18, 0)
   end
 end
 
