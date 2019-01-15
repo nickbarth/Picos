@@ -11,7 +11,7 @@ All the Pico games I've ever made... and am probably still working on!
       <a href="https://www.lexaloffle.com/bbs/?pid=54318"><img src="https://www.lexaloffle.com/bbs/thumbs/pico54317.png"></a>
     </td><td>
       <h3>Pico Slots</h3>
-      <a href="https://www.lexaloffle.com/bbs/?pid=31535"><img src="https://www.lexaloffle.com/bbs/thumbs/pico54310.png"></a>
+      <a href="https://www.lexaloffle.com/bbs/?tid=31535"><img src="https://www.lexaloffle.com/bbs/thumbs/pico54310.png"></a>
     </td>
   </tr>
 </table>
