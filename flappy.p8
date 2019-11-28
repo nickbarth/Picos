@@ -55,20 +55,46 @@ end
 
 make_bird = function(x, y)
     local self = {
+        x = x,
+        y = y,
+        dy = 0,
         step = 0,
         frame = 0,
-        animate = 0
+        animate = 0,
     }
 
     function self.update()
         self.step += 1
-        if self.step % 5 == 0 then
-            self.animate = (self.animate + 1) % 4
+
+        if not gameover then
+            self.y += self.dy
+            self.dy += 0.1
+
+            if self.step % 5 == 0 then
+                self.animate = (self.animate + 1) % 4
+            end
+
+            if btnp(2) or btnp(4) or btnp(5) then
+                self.dy = -1
+            end
+
+            if self.y <= -2 then
+                self.y = -1
+                self.dy = 0.5
+            end
+
+
+            if self.y >= 48 then 
+                gameover = true
+            end
+        else
+            self.x -= 1
         end
     end
 
     self.draw = function()
-        spr(7 + self.animate, 20, 20, 1, 1)
+        spr(7 + self.animate, self.x, self.y, 1, 1)
+        print(flr(self.y))
     end
 
     return self
@@ -76,16 +102,28 @@ end
 
 function make_pipe(x, y)
     local self = {
-        space = flr(rnd(3)),
+        space = flr(rnd(4)),
         x = x,
-        y = y
+        y = y,
     }
 
     function self.update()
         self.x -= 1
+
+        -- passed it
+        if self.x == 0 then
+            score:add()
+        end
+
+        if self.x < 16 and self.x > -5 then
+            if bird.y > 2 + ((self.space + 2) * 8) or bird.y < (self.space * 8) + 6 then
+                gameover = true
+            end
+            -- if bird.y < (self.space * 8) + 6 then
+        end
     end
 
-    self.draw = function()
+    function self.draw()
         local _y = 0
 
         while _y < self.space do
@@ -94,6 +132,7 @@ function make_pipe(x, y)
         end
 
         spr(17, self.x, self.y+(_y*8), 2, 1, false, true)
+        self.top = self.y + (_y*8)
 
         _y = _y + 3
 
@@ -104,28 +143,101 @@ function make_pipe(x, y)
             spr(33, self.x, self.y+(_y*8), 2, 1)
             _y += 1
         end
+
+        -- print((self.space * 8)+21, 0, 10)
+        print(((self.space + 2) * 8), 0, 10)
+    end
+
+    function self.deletable()
+        return self.x <= -16
+    end
+
+    return self
+end
+
+function make_pipes(speed)
+    local self = {
+        step = 0,
+        speed = speed,
+        pipes = {},
+        x = x,
+        y = y
+    }
+
+    function self.update()
+        self.step += 1
+
+        if #self.pipes <= 1 and self.step >= self.speed and not gameover then
+            self.step = 0
+            add(self.pipes, make_pipe(64, 0))
+        end
+
+        for pipe in all(self.pipes) do
+            pipe:update()
+
+            if pipe:deletable() then
+                del(self.pipes, pipe)
+            end
+        end
+    end
+
+    function self.draw()
+        for pipe in all(self.pipes) do
+            pipe:draw() 
+        end
+    end
+
+    return self
+end
+
+function make_score(points)
+    self = {
+        points = points
+    }
+
+    function print_right(num)
+        print(num, 64 - (#tostr(num) * 4), 1, 7)
+    end
+
+    function self.add()
+        self.points += 1
+    end
+
+    function self.draw()
+        print_right(self.points)
     end
 
     return self
 end
 
 function _init()
+    gameover = false
     background = make_background()
-    bird = make_bird()
-    pipe = make_pipe(64, 0)
+    bird = make_bird(10, 6)
+    pipes = make_pipes(50)
+    score = make_score(0)
+    -- pipe = make_pipe(16, 10)
+    pipe = make_pipe(60, 0)
 end
 
 function _update()
-    background:update()
+    pipes:update()
     bird:update()
-    pipe:update()
+    background:update()
+    -- pipe:update()
 end
 
 function _draw()
     cls(12)
     background:draw()
     bird:draw()
-    pipe:draw()
+    pipes:draw()
+    score:draw()
+    -- pipe:draw()
+
+    if gameover then
+        print("gameover", 10, 10)
+    end
 end
 
 __gfx__
