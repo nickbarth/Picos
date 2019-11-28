@@ -1,25 +1,25 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
-poke(0x5f2c,3)
+poke(0x5f2c, 3)
 
-make_parallax = function(x, y, frame, width, height)
+make_parallax = function(x, y, speed, frame, width, height)
     local self = {
         x = x,
         y = y,
+        speed = speed,
         frame = frame,
         width = width,
         height = height,
         original_x = x
     }
 
-    self.update = function()
-        self.x = self.x - 1
-
+    function self.update()
+        self.x = self.x - speed
         if self.x == (self.original_x - (self.width * 8)) then self.x = self.original_x end
     end
 
-    self.draw = function()
+    function self.draw()
         for _x=0, (8 / self.width) do
             spr(self.frame, self.x+(_x*(self.width * 8)), self.y, self.width, self.height)
         end
@@ -28,52 +28,114 @@ make_parallax = function(x, y, frame, width, height)
     return self
 end
 
-make_floor = function(x, y)
-    return make_parallax(x, y, 7, 1, 4)
+make_background = function()
+    local self = {
+        floor = make_parallax(0, 42, 1, 7, 1, 4),
+        clouds = make_parallax(0, 20, 0.25, 64, 8, 2),
+        city = make_parallax(0, 22, 0.5, 3, 4, 4),
+        hills = make_parallax(0, 40, 1, 72, 8, 2)
+    }
+
+    function self.update()
+        self.floor:update()
+        self.clouds:update()
+        self.city:update()
+        self.hills:update()
+    end
+
+    function self.draw()
+        self.floor:draw()
+        self.clouds:draw()
+        self.city:draw()
+        self.hills:draw()
+    end
+
+    return self
 end
 
-make_cityscape = function(x, y)
-    return make_parallax(x, y, 3, 4, 4)
+make_bird = function(x, y)
+    local self = {
+        step = 0,
+        frame = 0,
+        animate = 0
+    }
+
+    function self.update()
+        self.step += 1
+        if self.step % 5 == 0 then
+            self.animate = (self.animate + 1) % 4
+        end
+    end
+
+    self.draw = function()
+        spr(7 + self.animate, 20, 20, 1, 1)
+    end
+
+    return self
 end
 
-make_hills = function(x, y)
-    return make_parallax(x, y, 72, 8, 2)
-end
+function make_pipe(x, y)
+    local self = {
+        space = flr(rnd(3)),
+        x = x,
+        y = y
+    }
 
-make_clouds = function(x, y)
-    return make_parallax(x, y, 64, 8, 2)
+    function self.update()
+        self.x -= 1
+    end
+
+    self.draw = function()
+        local _y = 0
+
+        while _y < self.space do
+            spr(33, self.x, self.y+(_y*8), 2, 1)
+            _y += 1
+        end
+
+        spr(17, self.x, self.y+(_y*8), 2, 1, false, true)
+
+        _y = _y + 3
+
+        spr(17, self.x, self.y+(_y*8), 2, 1)
+        _y = _y + 1
+
+        while _y < 7 do
+            spr(33, self.x, self.y+(_y*8), 2, 1)
+            _y += 1
+        end
+    end
+
+    return self
 end
 
 function _init()
-    floor = make_floor(0, 42)
-    clouds = make_clouds(0, 20)
-    city = make_cityscape(0, 22)
-    hills = make_hills(0, 40)
+    background = make_background()
+    bird = make_bird()
+    pipe = make_pipe(64, 0)
 end
 
 function _update()
-    floor:update()
-    clouds:update()
-    city:update()
-    hills:update()
+    background:update()
+    bird:update()
+    pipe:update()
 end
 
 function _draw()
     cls(12)
-    floor:draw()
-    clouds:draw()
-    city:draw()
-    hills:draw()
+    background:draw()
+    bird:draw()
+    pipe:draw()
 end
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000008885800088858000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700088975800889758000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000668999998889999900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00077000666999996669999900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00700700666eeee0666eeee000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0000000088eeee0066eeee0000555555555000000000005555555000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000008885800088858000000000000000000000000000000000008885800088858000888580008885800000000000000000000000000000000000000000
+00700700088975800889758000000000000000000000000000000000088975800889758008897580088975800000000000000000000000000000000000000000
+00077000668999998889999900000000000000000000000000000000228999998889999988899999888999990000000000000000000000000000000000000000
+00077000666999996669999900000000000000000000000000000000222999992229999922299999222999990000000000000000000000000000000000000000
+00700700666eeee0666eeee000000000000000000000000000000000222eeee0222eeee0222eeee0222eeee00000000000000000000000000000000000000000
+0000000088eeee0066eeee00005555555550000000000055555550000eeeee000eeeee0022eeee000eeeee000000000000000000000000000000000000000000
 00000000000000000000000000566666665000000000005666665000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000056dd6dd6500000000000566dd65000000000000000000000000000000000000000000000000000000000000000000000000000
 000000000ff99999999999900056dd6dd650000000000056ddd65000000000000000000000000000000000000000000000000000000000000000000000000000
