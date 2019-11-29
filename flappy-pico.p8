@@ -92,13 +92,10 @@ make_bird = function(x, y)
                 sfx(1)
             end
         elseif titlescreen then
-            self.y = self.init_y
+            self.x = self.init_x
 
-            if self.x < self.init_x then
-                self.x += 1
-                --self.y += 1
-                --self.y += self.dy
-                --self.dy += 0.05
+            if self.y < self.init_y then
+                self.y += 1
             end
 
             if self.step % 5 == 0 then
@@ -110,8 +107,7 @@ make_bird = function(x, y)
             if self.x <= -30 and pipes.count() == 0 then
                 titlescreen = true
                 self.dy = 0
-                -- self.y = -8
-                self.x = -8
+                self.y = -8
             end
         end
     end
