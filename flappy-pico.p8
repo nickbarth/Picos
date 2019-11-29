@@ -92,8 +92,14 @@ make_bird = function(x, y)
                 sfx(1)
             end
         elseif titlescreen then
-            self.x = self.init_x
             self.y = self.init_y
+
+            if self.x < self.init_x then
+                self.x += 1
+                --self.y += 1
+                --self.y += self.dy
+                --self.dy += 0.05
+            end
 
             if self.step % 5 == 0 then
                 self.animate = (self.animate + 1) % 4
@@ -104,6 +110,8 @@ make_bird = function(x, y)
             if self.x <= -30 and pipes.count() == 0 then
                 titlescreen = true
                 self.dy = 0
+                -- self.y = -8
+                self.x = -8
             end
         end
     end
@@ -167,19 +175,18 @@ function make_pipe(x, y)
     return self
 end
 
-function make_pipes(speed)
+function make_pipes(speed, max)
     local self = {
         step = 0,
         speed = speed,
-        pipes = {},
-        x = x,
-        y = y
+        max = max,
+        pipes = {}
     }
 
     function self.update()
         self.step += 1
 
-        if #self.pipes <= 1 and self.step >= self.speed and not gameover then
+        if #self.pipes < self.max and self.step >= self.speed and not gameover then
             self.step = 0
             add(self.pipes, make_pipe(64, 0))
         end
@@ -251,9 +258,8 @@ function _init()
     titlescreen = true
     background = make_background()
     bird = make_bird(15, 15)
-    pipes = make_pipes(50)
+    pipes = make_pipes(50, 2)
     score = make_score(0)
-    pipe = make_pipe(60, 0)
     btn = make_spr(64, 22, 54, 2, 1)
 end
 
