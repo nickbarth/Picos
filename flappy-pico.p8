@@ -94,6 +94,10 @@ make_bird = function(x, y)
         elseif titlescreen then
             self.x = self.init_x
 
+            if self.y + 2 == self.init_y then
+              sfx(3)
+            end
+
             if self.y < self.init_y then
                 self.y += 1
             end
@@ -102,7 +106,15 @@ make_bird = function(x, y)
                 self.animate = (self.animate + 1) % 4
             end
         else
+            -- dead
             self.x -= 1
+
+            if self.animate < 3 then
+              self.animate += 1
+              camera(flr(sin(rnd(5))), flr(sin(rnd(5))))
+            else
+              camera(0, 0)
+            end
 
             if self.x <= -30 and pipes.count() == 0 then
                 titlescreen = true
@@ -137,6 +149,7 @@ function make_pipe(x, y)
         if not gameover and self.x < 21 and self.x > 0 then
             if bird.y > 2 + ((self.space + 2) * 8) or bird.y < (self.space * 8) + 6 then
                 gameover = true
+                bird.animate = 0
                 sfx(1)
             end
         end
@@ -144,6 +157,8 @@ function make_pipe(x, y)
 
     function self.draw()
         local _y = 0
+
+        spr(33, self.x, self.y-8, 2, 1)
 
         while _y < self.space do
             spr(33, self.x, self.y+(_y*8), 2, 1)
@@ -220,6 +235,7 @@ function make_score(points)
 
     function self.add()
         self.points += 1
+        sfx(2)
     end
 
     function self.reset()
@@ -250,6 +266,11 @@ function make_spr(frame, x, y, width, height)
 end
 
 function _init()
+    -- _pal={3,3,3,3,139,139,138,135,138,135,139,139,139,138,135}
+    -- for i,c in pairs(_pal) do
+    --   pal(i-1, c, 1)
+    -- end
+
     gameover = true
     titlescreen = true
     background = make_background()
@@ -388,3 +409,5 @@ __gfx__
 __sfx__
 00020000090500b0500d0500f050110501305016000170003b100251002510024100231002f10032100381003510033100301002d1002a1002510023100211001f1001d1001c1001a10019100171001610016100
 000100000f1500f1500f1500515005150051500515000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+000100001e0501e0502a0502a0502a0002a0002a00022000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00010000150501f0502105023050210502a0002a00022000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
