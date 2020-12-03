@@ -29,4 +29,4 @@ All the Pico games I've ever made... and am probably still working on!
 </table>
 
 ### License
-MIT &copy; 2019 Nick Barth
+MIT &copy; 2020 Nick Barth
