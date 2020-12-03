@@ -15,6 +15,15 @@ All the Pico games I've ever made... and am probably still working on!
     </td><td>
       <h3>Flappy Pico</h3>
       <a href="https://www.lexaloffle.com/bbs/?tid=36055"><img src="https://www.lexaloffle.com/bbs/thumbs/pico8_flappy_pico-0.png"></a>
+    </td><td>
+      <h3>Pico Snake</h3>
+      <a href="https://www.lexaloffle.com/bbs/?tid=40634"><img src="https://www.lexaloffle.com/bbs/thumbs/pico8_picosnake-1.png"></a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>Trevon Cruise</h3>
+      <a href="https://www.lexaloffle.com/bbs/?tid=40648"><img src="https://www.lexaloffle.com/bbs/thumbs/pico8_trevon_cruise-0.png"></a>
     </td>
   </tr>
 </table>
