@@ -25,6 +25,10 @@ All the Pico games I've ever made... and am probably still working on!
       <h3>Trevon Cruise</h3>
       <a href="https://www.lexaloffle.com/bbs/?tid=40648"><img src="https://www.lexaloffle.com/bbs/thumbs/pico8_trevon_cruise-0.png"></a>
     </td>
+    <td>
+      <h3>Pico Uno</h3>
+      <a href="https://www.lexaloffle.com/bbs/?tid=51326"><img src="https://www.lexaloffle.com/bbs/thumbs/pico8_picouno-0.png"></a>
+    </td>
   </tr>
 </table>
 
